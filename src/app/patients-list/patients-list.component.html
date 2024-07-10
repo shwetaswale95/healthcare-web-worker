@@ -1,7 +1,7 @@
 <div class="container mt-4">
   <div class="row mb-3">
     <div class="col-md-8">
-      <input type="text" class="form-control" placeholder="Search" [(ngModel)]="searchTerm" (input)="filterData()">
+      <input type="text" class="form-control" placeholder="Search by name" [(ngModel)]="searchTerm" (input)="onSearch()">
     </div>
     <div class="col-md-4">
       <i class="fa-solid fa-filter"></i>
@@ -35,6 +35,9 @@
           </ng-container>
         </td>
         <td>{{ item?.insurance_details.expiry_date}}</td>
+      </tr>
+      <tr *ngIf="noRecordsFound">
+        <td colspan="5" class="text-center">No records found</td>
       </tr>
     </tbody>
   </table>

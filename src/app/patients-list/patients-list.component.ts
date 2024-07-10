@@ -11,25 +11,35 @@ export class PatientsListComponent implements OnInit {
 
   filteredData: any = [];
   searchTerm = '';
-  filterTerm = '';
   page: number = 1;
   pageSize: number = 20;
+  originalData: any = [];
+  noRecordsFound: boolean = false;
 
   constructor(private patientDataService: PatientDataService) {}
 
   ngOnInit() {
-    this.filterData();
+    this.getClientList();
   }
 
-  filterData() {
+  getClientList() {
     this.patientDataService.getLocalData().subscribe(res => {
-      console.log(res)
-      this.filteredData = res;
-    })
-    // this.filteredData = this.data.filter(item => {
-    //   return item.name.toLowerCase().includes(this.searchTerm.toLowerCase()) &&
-    //          (!this.filterTerm || item.value === this.filterTerm);
-    // });
+      this.originalData = res;
+      this.filteredData = [...this.originalData]
+    });
+  }
+
+  onSearch() {
+    if (this.searchTerm) {
+      this.filteredData = this.originalData.filter((item: any) => {
+        return item.personal_details.first_name.toLowerCase().includes(this.searchTerm.toLowerCase());
+      
+    });
+    this.noRecordsFound = this.filteredData.length === 0;
+    } else {
+      this.filteredData = [...this.originalData];
+      this.noRecordsFound = false;
+    }
   }
 
 }
