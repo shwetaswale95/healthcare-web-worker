@@ -1,0 +1,41 @@
+<div class="container mt-4">
+  <div class="row mb-3">
+    <div class="col-md-8">
+      <input type="text" class="form-control" placeholder="Search" [(ngModel)]="searchTerm" (input)="filterData()">
+    </div>
+    <div class="col-md-4">
+      <i class="fa-solid fa-filter"></i>
+    </div>
+  </div>
+  <div class="text-center">
+    <pagination-controls (pageChange)="page = $event"></pagination-controls>
+  </div>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th scope="col">Patient Name</th>
+        <th scope="col">Provider</th>
+        <th scope="col">Ongoing Treatment</th>
+        <th scope="col">Medical History</th>
+        <th scope="col">Insurance Expiry date</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of filteredData | paginate: { itemsPerPage: pageSize, currentPage: page }; let i = index">
+        <td>{{ item?.personal_details.first_name}}</td>
+        <td>{{ item.insurance_details?.provider}}</td>
+        <td>
+          <ng-container *ngFor="let ongoing_treatment_item of item.ongoing_treatment; let last = last">
+            {{ongoing_treatment_item.treatment_name }}<ng-container *ngIf="!last">, </ng-container>
+          </ng-container>
+        </td>
+        <td>
+          <ng-container *ngFor="let medical_history_item of item.medical_history; let last = last">
+            {{medical_history_item.condition }}<ng-container *ngIf="!last">, </ng-container>
+          </ng-container>
+        </td>
+        <td>{{ item?.insurance_details.expiry_date}}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
