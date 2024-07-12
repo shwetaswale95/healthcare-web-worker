@@ -30,16 +30,39 @@ export class PatientsListComponent implements OnInit {
   }
 
   onSearch() {
+    // if (this.searchTerm) {
+    //   this.filteredData = this.originalData.filter((item: any) => {
+    //     return item.personal_details.first_name.toLowerCase().includes(this.searchTerm.toLowerCase());
+    // });
+    // this.noRecordsFound = this.filteredData.length === 0;
+    // } else {
+    //   this.filteredData = [...this.originalData];
+    //   this.noRecordsFound = false;
+    // }
     if (this.searchTerm) {
-      this.filteredData = this.originalData.filter((item: any) => {
-        return item.personal_details.first_name.toLowerCase().includes(this.searchTerm.toLowerCase());
-      
-    });
+    const term = this.searchTerm.toLowerCase();
+    this.filteredData = this.originalData.filter((item: any) => this.containsTerm(item, term));
     this.noRecordsFound = this.filteredData.length === 0;
     } else {
       this.filteredData = [...this.originalData];
       this.noRecordsFound = false;
     }
+  }
+
+  containsTerm(item: any, term: string): boolean {
+    // If the item is an object, check its values
+    if (item && typeof item === 'object') {
+      return Object.values(item).some(value => this.containsTerm(value, term));
+    }
+    // If the item is a string, check if it includes the search term
+    if (typeof item === 'string') {
+      return item.toLowerCase().includes(term);
+    }
+    // If the item is a number, check if its string representation includes the search term
+    if (typeof item === 'number') {
+      return item.toString().includes(term);
+    }
+    return false;
   }
 
 }
