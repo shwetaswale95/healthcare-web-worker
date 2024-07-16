@@ -1,12 +1,19 @@
 <div class="container mt-4">
+  <!-- <div *ngIf="isBusy">Processing...</div> -->
+  <ng-http-loader *ngIf="isBusy" [backgroundColor]="'#485cc7'"></ng-http-loader>
   <div class="row mb-3 align-items-center">
-    <div class="col-md-10">
-      <input type="text" class="form-control" placeholder="Search" [(ngModel)]="searchTerm" (input)="onSearch()">
+    <div class="col-md-7">
+      <input type="text" class="form-control" placeholder="Search" [(ngModel)]="searchTerm">
     </div>
-    <div class="col-md-2">
-      <i class="fa-solid fa-filter"></i>
+    <div class="col-md-5">
+      <button class="btn btn-primary" (click)="onSearch()">Search</button>
+      <!-- <i class="fa-solid fa-filter"></i> -->
+      <!-- <button (click)="filterArray()">Search (No Web Worker)</button> -->
+      <button class="btn btn-primary ms-2" (click)="filterArrayWithWorker()">Search (With Web Worker)</button>
     </div>
   </div>
+  
+  <button  class="btn btn-info" (click)="alert('Button Clicked')">Another Action</button>
   <div class="text-center">
     <pagination-controls (pageChange)="page = $event"></pagination-controls>
   </div>

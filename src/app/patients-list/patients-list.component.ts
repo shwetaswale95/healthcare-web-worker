@@ -15,6 +15,8 @@ export class PatientsListComponent implements OnInit {
   pageSize: number = 20;
   originalData: any = [];
   noRecordsFound: boolean = false;
+  isBusy: boolean = false;
+  private worker!: Worker
 
   constructor(private patientDataService: PatientDataService) {}
 
@@ -39,13 +41,22 @@ export class PatientsListComponent implements OnInit {
     //   this.filteredData = [...this.originalData];
     //   this.noRecordsFound = false;
     // }
+    this.isBusy = true;
     if (this.searchTerm) {
-    const term = this.searchTerm.toLowerCase();
-    this.filteredData = this.originalData.filter((item: any) => this.containsTerm(item, term));
-    this.noRecordsFound = this.filteredData.length === 0;
+        const term = this.searchTerm.toLowerCase();
+        const start = performance.now();
+        while (performance.now() - start < 3000) {
+          // Blocking the main thread for 2 seconds
+          this.isBusy = false;
+        }
+        this.filteredData = this.originalData.filter((item: any) => this.containsTerm(item, term));
+        this.noRecordsFound = this.filteredData.length === 0;
+        
+      
     } else {
       this.filteredData = [...this.originalData];
       this.noRecordsFound = false;
+      this.isBusy = false;
     }
   }
 
@@ -64,5 +75,27 @@ export class PatientsListComponent implements OnInit {
     }
     return false;
   }
+
+
+  filterArrayWithWorker() {
+    this.isBusy = true;
+    // if (typeof Worker !== 'undefined') {
+      this.worker = new Worker(new URL('../filter.worker', import.meta.url));
+      this.worker.onmessage = ({ data }) => {
+        this.filteredData = data;
+        this.isBusy = false;
+      };
+      const term = this.searchTerm.toLowerCase();
+      this.worker.postMessage({ array: this.originalData, term: term });
+    // } else {
+    //   // Web Workers are not supported in this environment
+    //   this.onSearch();
+    // }
+  }
+
+  alert(message: string) {
+    window.alert(message);
+  }
+
 
 }

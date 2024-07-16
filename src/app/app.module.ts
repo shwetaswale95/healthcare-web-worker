@@ -7,6 +7,7 @@ import { PatientsListComponent } from './patients-list/patients-list.component';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { NgxPaginationModule } from 'ngx-pagination';
+import { NgHttpLoaderModule } from 'ng-http-loader';
 
 @NgModule({
   declarations: [
@@ -17,8 +18,9 @@ import { NgxPaginationModule } from 'ngx-pagination';
     BrowserModule,
     FormsModule,
     HttpClientModule,
+    NgHttpLoaderModule.forRoot(),
     NgxPaginationModule,
-    AppRoutingModule
+    AppRoutingModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
