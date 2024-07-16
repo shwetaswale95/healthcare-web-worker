@@ -51,8 +51,6 @@ export class PatientsListComponent implements OnInit {
         }
         this.filteredData = this.originalData.filter((item: any) => this.containsTerm(item, term));
         this.noRecordsFound = this.filteredData.length === 0;
-        
-      
     } else {
       this.filteredData = [...this.originalData];
       this.noRecordsFound = false;
