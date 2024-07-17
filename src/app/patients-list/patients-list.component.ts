@@ -16,6 +16,7 @@ export class PatientsListComponent implements OnInit {
   originalData: any = [];
   noRecordsFound: boolean = false;
   isBusy: boolean = false;
+  webWorkerSeacrh: boolean = false;
   private worker!: Worker
 
   constructor(private patientDataService: PatientDataService) {}
@@ -42,10 +43,11 @@ export class PatientsListComponent implements OnInit {
     //   this.noRecordsFound = false;
     // }
     this.isBusy = true;
-    if (this.searchTerm) {
+    setTimeout(() => {
+      if (this.searchTerm) {
         const term = this.searchTerm.toLowerCase();
         const start = performance.now();
-        while (performance.now() - start < 3000) {
+        while (performance.now() - start < 2000) {
           // Blocking the main thread for 2 seconds
           this.isBusy = false;
         }
@@ -56,6 +58,8 @@ export class PatientsListComponent implements OnInit {
       this.noRecordsFound = false;
       this.isBusy = false;
     }
+    }, 1000);
+
   }
 
   containsTerm(item: any, term: string): boolean {
@@ -76,12 +80,12 @@ export class PatientsListComponent implements OnInit {
 
 
   filterArrayWithWorker() {
-    this.isBusy = true;
+    this.webWorkerSeacrh = true;
     // if (typeof Worker !== 'undefined') {
       this.worker = new Worker(new URL('../filter.worker', import.meta.url));
       this.worker.onmessage = ({ data }) => {
         this.filteredData = data;
-        this.isBusy = false;
+        this.webWorkerSeacrh = false;
       };
       const term = this.searchTerm.toLowerCase();
       this.worker.postMessage({ array: this.originalData, term: term });
